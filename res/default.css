@@ -1,0 +1,25 @@
+@import url(theme.css);
+
+html {
+    font: system;
+    size: *;
+}
+
+body {
+    style-set: "default-theme";
+    flow: horizontal;
+    margin: 0;
+    padding: 0;
+}
+
+frame#task-pane {
+    box-shadow: 0 0 2px rgba(0, 0, 0, .6);
+}
+
+frame#task-details {
+    display: none;
+}
+
+splitter {
+    background: transparent;
+}

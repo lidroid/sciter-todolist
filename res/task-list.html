@@ -1,0 +1,157 @@
+<html window-resizable lang="zh">
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <title>任务列表</title>
+    <style>
+    @import url(lang.css);
+    @import url(plus.css);
+    @import url(theme.css);
+
+    html, body {
+        font: system;
+        size: *;
+        background: transparent;
+    }
+
+    body {
+        style-set: "default-theme";
+        flow: vertical;
+    }
+
+    div#new-item {
+        flow: horizontal;
+        padding: 8dip;
+        margin: 5dip;
+        background: rgba(0, 0, 0, .3);
+        border-radius: 4px;
+    }
+
+    div#new-item input#new-item-title {
+        width: *;
+        background: transparent;
+        border: none;
+        color: #fff;
+    }
+
+    ul {
+        display: block;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    ul > li {
+        display: block;
+        list-style: none;
+        flow: horizontal;
+        padding: 10dip;
+        background: #f0f0f0;
+        box-shadow: 0 0 2px rgba(0, 0, 0, .6);
+        border-radius: 4px;
+        margin: 5dip;
+        vertical-align: middle;
+    }
+
+    ul > li > input, ul > li > div > input {
+        margin-top: 2dip;
+    }
+
+    ul > li > span, ul > li > div:nth-child(2) {
+        width: *;
+        margin-left: 4dip;
+    }
+
+    ul > li:current {
+        background: #dbeefe;
+    }
+
+    ul > li > div {
+        flow: vertical;
+        vertical-align: middle;
+    }
+
+    caption#task-done-desc {
+        behavior: check;
+        display: inline-block;
+        margin: 4dip;
+        padding: 6dip 14dip;
+        background: rgba(0, 0, 0, .4);
+        border-radius: 4px;
+        color: #fff;
+    }
+
+    caption#task-done-desc + ul#task-list-done {
+        visibility: visible;
+        height: 0;
+        opacity: 0;
+
+        transition: height(quad-out, 0.4s)
+                    opacity(linear, 0.4s);
+    }
+
+    caption#task-done-desc:checked + ul#task-list-done {
+        visibility: visible;
+        height: min-content;
+        opacity: 1;
+
+        transition: height(quad-out, 0.4s)
+                    opacity(linear, 0.4s);
+    }
+
+    ul#task-list-done:animating
+    {
+      visibility:visible;
+      overflow-y:hidden;
+    }
+    </style>
+
+    <script type="text/tiscript">
+    function listClicked(evt) {
+        var current = self.$(li:current);
+        if (current) current.clearState(Element.STATE_CURRENT);
+        var elem = evt.target;
+        while (elem.tag != "li" && elem.parent != null) elem = elem.parent;
+        if (elem.tag == "li") {
+            elem.setState(Element.STATE_CURRENT);
+        }
+    }
+
+    self.ready = function() {
+        $(ul#task-list-todo).on("click", listClicked);
+        $(ul#task-list-done).on("click", listClicked);
+
+        $(input#new-item-title).on("keyup", function(evt) {
+            if (evt.keyCode == Event.VK_RETURN && this.text.trim().length > 0) {
+                Data.currentTaskList.unshift({id: Data.currentTaskList[0].id - 1, title: this.text.trim(), star: $(#new-item-star).checked, done: false});
+                this.clear();
+            }
+        });
+    }
+    </script>
+</head>
+<body model="Data">
+    <div #new-item>
+        <input|text #new-item-title novalue="Hello world" />
+        <input|checkbox #new-item-star class="task-star" />
+    </div>
+    <ul each="task in currentTaskList|{done:false}" #task-list-todo>
+        <li @taskid="task.id">
+            <input|checkbox(task.done) class="task-done" />
+            <span class="task-title"><output(task.title) /></span>
+            <input|checkbox(task.star) class="task-star" />
+        </li>
+    </ul>
+
+    <caption #task-done-desc class="{{hide:currentTaskList.length==0}}">已完成任务</caption>
+    <ul each="task in currentTaskList|{done:true}" #task-list-done collapsed>
+        <li @taskid="task.id">
+            <div><input|checkbox(task.done) class="task-done" /></div>
+            <div>
+                <span class="task-title"><output(task.title) /></span>
+                <span class="task-desc"></span>
+            </div>
+            <div><input|checkbox(task.star) class="task-star" /></div>
+        </li>
+    </ul>
+</body>
+</html>

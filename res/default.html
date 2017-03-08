@@ -2,8 +2,67 @@
 <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <title>待办清单</title>
+    <link rel="stylesheet" href="default.css" />
+    <script type="text/tiscript">
+    include "vlist.tis";
+
+    function moveToScreenCenter() {
+        var (screenWidth, screenHeight) = view.screenBox(#workarea, #dimension);
+        var windowWidth = 840;
+        var windowHeight = 540;
+        view.move((screenWidth - windowWidth) / 2, (screenHeight - windowHeight) / 2, windowWidth, windowHeight, true);
+    }
+    moveToScreenCenter();
+    </script>
+
+    <script type="text/tiscript">
+    namespace Data {
+        var tasks = [
+            {
+                listId: 0;
+                title: "todolist开发任务",
+                count: 4,
+                items: [
+                    { id: 12345, title: "需求调研", star: false, done: true, doneDate: new Date("2016-12-12") },
+                    { id: 12346, title: "编写需求分析说明书", star: true, done: true, doneDate: new Date("2016-12-13") },
+                    { id: 12347, title: "功能原型设计", star: false, done: false },
+                    { id: 12348, title: "界面UI设计", star: true, done: false }
+                ]
+            },
+            {
+                taskId: 1;
+                title: "月工作计划",
+                count: 4,
+                items: [
+                    { id: 300, title: "新租办公室", star: true, done: true, doneDate: new Date("2016-12-12") },
+                    { id: 301, title: "变更税务登记证", star: true, done: true, doneDate: new Date("2016-12-13") },
+                    { id: 302, title: "招聘开发人员", star: false, done: false },
+                    { id: 303, title: "招标XXX工程", star: true, done: false }
+                ]
+            }
+        ];
+
+        var currentTaskList = [];
+    }
+
+    self.ready = function() {
+        $(frame#task-pane).load("task-pane.html");
+        $(frame#task-list).load("task-list.html");
+        $(frame#task-pane)[0].$(vlist).on("change", function() {
+            Data.currentTaskList = this.value[this.currentIndex].items;
+            $(frame#task-list).load("task-list.html");
+        });
+    }
+    </script>
 </head>
 <body>
-    <h1>Hello world!</h1>
+    <frameset cols="250dip,*,300dip">
+        <frame id="task-pane"></frame>
+        <splitter />
+        <frame id="task-list"></frame>
+        <frame id="task-details">
+            <h1>Hello World</h1>
+        </frame>
+    </frameset>
 </body>
 </head>

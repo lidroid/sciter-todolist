@@ -1,0 +1,122 @@
+<html window-resizable lang="zh">
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <title>任务侧栏</title>
+    <style>
+    @import url(theme.css);
+
+    html {
+        font: system;
+        size: *;
+    }
+
+    body {
+        style-set: "default-theme";
+        flow: vertical;
+        margin: 0;
+        padding: 0;
+    }
+
+    vlist {
+        display: block;
+        width: 100%;
+        height: *;
+        overflow: scroll-indicator;
+        background-color: #f6f6f6;
+    }
+
+    vlist > li {
+        display: block;
+        flow: horizontal;
+        padding: 0;
+        height: 36dip;
+        vertical-align: middle;
+        behavior:form; /* each repeated child is treated as a form so it can accept object values */
+    }
+
+    vlist > li:current {
+        background: #5da1da;
+        color: #fff;
+    }
+
+    vlist > li:current div:last-child {
+        display: block;
+        border-left: 1px solid #fff;
+        width: 36dip;
+        height: *;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    vlist > li > div:first-child {
+        margin: 0 8dip;
+    }
+
+    vlist > li > div:nth-child(2) {
+        width: 5*;
+    }
+
+    vlist > li > div:nth-child(3) {
+        margin-right: 6dip;
+    }
+
+    vlist > li > div:last-child {
+        display: none;
+    }
+
+    div#new-task {
+        width: 100%;
+        height: 35dip;
+        behavior: clickable;
+        font-size: 2.5em;
+        line-height: 0.2em;
+        color: #aaa;
+        background-color: #fafafa;
+        text-align: center;
+        vertical-align: middle;
+        margin: 0;
+        box-shadow: 0 0 2px rgba(0, 0, 0, .6);
+    }
+
+    div#new-task:hover {
+        color: #666;
+        background: #f6f6f6;
+    }
+
+    div#new-task > span {
+        size: *;
+        display: block;
+        text-align: center;
+        vertical-align: middle;
+    }
+    </style>
+
+    <script type="text/tiscript">
+    include "vlist.tis";
+
+    self.ready = function() {
+        var vlist = VirtualList {
+            container: $(vlist),
+            bufferSize: 20
+        };
+
+        vlist.value = Data.tasks;
+        vlist.currentIndex = 0;
+        vlist.postEvent("change");
+    }
+    </script>
+</head>
+<body>
+    <vlist>
+        <li>
+            <div><img class="detail" /></div>
+            <div><span class="task-title"><output(title) /></span></div>
+            <div><span class="task-count"><output(count) /></span></div>
+            <div><img class="task-edit" /></div>
+        </li>
+    </vlist>
+    <div #new-task>
+        <span>+</span>
+    </div>
+</body>
+</html>

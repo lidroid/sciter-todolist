@@ -1,0 +1,49 @@
+@set default-theme {
+    @const BG: url(default/bg.jpg);
+    @const FG: #000;
+    @const FG-REVERT: #fff;
+    @const TASKS-BG: #f0f0f0;
+    @const TASKS-CURRENT-BG: #5696cb;
+    @const TASKS-CURRENT-FG: #fff;
+    @const TASKS-ICON: url(default/task-icon.png);
+    @const TASKS-CURRENT-ICON: url(default/tasks-icon-current.png);
+    @const TASKS-EDIT-ICON: url(default/task-edit.png);
+    :root { background: @BG; color: @FG; }
+    :root img.task-edit {
+        foreground-image: url(default/edit.png);
+        size: 24dip;
+    }
+
+    :root img.detail {
+        foreground-image: url(default/detail.png);
+        size: 24dip;
+    }
+
+    :root vlist li:current img.detail {
+        foreground-image: url(default/detail-sel.png);
+    }
+
+    :root input.task-star {
+        foreground-image: url(default/star.png);
+    }
+
+    :root input.task-star:checked {
+        foreground-image: url(default/star-sel.png);
+    }
+
+    :root input#new-item-star {
+        foreground-image: url(default/star-white.png);
+    }
+
+    :root input#new-item-star:checked {
+        foreground-image: url(default/star-white-sel.png);
+    }
+
+    :root input.task-done {
+        foreground-image: url(default/uncheck.png);
+    }
+
+    :root input.task-done:checked {
+        foreground-image: url(default/check.png);
+    }
+}
