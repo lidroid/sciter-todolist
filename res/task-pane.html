@@ -6,7 +6,6 @@
     @import url(theme.css);
 
     html {
-        font: system;
         size: *;
     }
 
@@ -22,7 +21,6 @@
         width: 100%;
         height: *;
         overflow: scroll-indicator;
-        background-color: #f6f6f6;
     }
 
     vlist > li {
@@ -30,18 +28,13 @@
         flow: horizontal;
         padding: 0;
         height: 36dip;
+        font-size: 1.1em;
         vertical-align: middle;
         behavior:form; /* each repeated child is treated as a form so it can accept object values */
     }
 
-    vlist > li:current {
-        background: #5da1da;
-        color: #fff;
-    }
-
     vlist > li:current div:last-child {
         display: block;
-        border-left: 1px solid #fff;
         width: 36dip;
         height: *;
         text-align: center;
@@ -70,17 +63,9 @@
         behavior: clickable;
         font-size: 2.5em;
         line-height: 0.2em;
-        color: #aaa;
-        background-color: #fafafa;
         text-align: center;
         vertical-align: middle;
         margin: 0;
-        box-shadow: 0 0 2px rgba(0, 0, 0, .6);
-    }
-
-    div#new-task:hover {
-        color: #666;
-        background: #f6f6f6;
     }
 
     div#new-task > span {
@@ -107,7 +92,7 @@
     </script>
 </head>
 <body>
-    <vlist>
+    <vlist #task-pane>
         <li>
             <div><img class="detail" /></div>
             <div><span class="task-title"><output(title) /></span></div>

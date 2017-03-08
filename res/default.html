@@ -42,16 +42,32 @@
             }
         ];
 
-        var currentTaskList = [];
+        var currentTaskList = null;
+        var currentTaskItems = [];
+    }
+
+    function setupTaskListObserver(taskList) {
+        var listObj = taskList;
+        return function(changedef) {
+            if (changedef[0] == #add-range || changedef[0] == #delete-range) {
+                listObj.count = listObj.items.length;
+            }
+        }
     }
 
     self.ready = function() {
         $(frame#task-pane).load("task-pane.html");
         $(frame#task-list).load("task-list.html");
         $(frame#task-pane)[0].$(vlist).on("change", function() {
-            Data.currentTaskList = this.value[this.currentIndex].items;
+            Data.currentTaskList = this.value[this.currentIndex];
+            Data.currentTaskItems = Data.currentTaskList.items;
             $(frame#task-list).load("task-list.html");
+            $(frame#task-list)[0].$(input#new-item-title).@#novalue = "在\"" + Data.currentTaskList.title + "\"中添加一个任务...";
         });
+
+        for (var taskList in Data.tasks) {
+            Object.addObserver.call(taskList.items, setupTaskListObserver(taskList));
+        }
     }
     </script>
 </head>

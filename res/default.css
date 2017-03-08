@@ -3,6 +3,8 @@
 html {
     font: system;
     size: *;
+    margin: 0;
+    padding: 0;
 }
 
 body {

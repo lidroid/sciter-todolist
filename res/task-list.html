@@ -8,7 +8,6 @@
     @import url(theme.css);
 
     html, body {
-        font: system;
         size: *;
         background: transparent;
     }
@@ -20,7 +19,7 @@
 
     div#new-item {
         flow: horizontal;
-        padding: 8dip;
+        padding: 6dip;
         margin: 5dip;
         background: rgba(0, 0, 0, .3);
         border-radius: 4px;
@@ -31,6 +30,7 @@
         background: transparent;
         border: none;
         color: #fff;
+        font-size: 1.1em;
     }
 
     ul {
@@ -45,11 +45,24 @@
         list-style: none;
         flow: horizontal;
         padding: 10dip;
+        font-size: 1.1em;
         background: #f0f0f0;
         box-shadow: 0 0 2px rgba(0, 0, 0, .6);
         border-radius: 4px;
         margin: 5dip;
         vertical-align: middle;
+    }
+
+    ul#task-list-done > li {
+        background: rgba(240, 240, 240, .8);
+    }
+
+    ul#task-list-done > li:current {
+        background: rgba(219, 238, 254, .8);
+    }
+
+    ul#task-list-done > li > div > span.task-title {
+        text-decoration: line-through;
     }
 
     ul > li > input, ul > li > div > input {
@@ -103,6 +116,10 @@
       visibility:visible;
       overflow-y:hidden;
     }
+
+    span.task-title {
+        text-overflow: ellipsis;
+    }
     </style>
 
     <script type="text/tiscript">
@@ -122,7 +139,7 @@
 
         $(input#new-item-title).on("keyup", function(evt) {
             if (evt.keyCode == Event.VK_RETURN && this.text.trim().length > 0) {
-                Data.currentTaskList.unshift({id: Data.currentTaskList[0].id - 1, title: this.text.trim(), star: $(#new-item-star).checked, done: false});
+                Data.currentTaskItems.unshift({id: Data.currentTaskItems[0].id - 1, title: this.text.trim(), star: $(#new-item-star).checked, done: false});
                 this.clear();
             }
         });
@@ -131,10 +148,10 @@
 </head>
 <body model="Data">
     <div #new-item>
-        <input|text #new-item-title novalue="Hello world" />
+        <input|text #new-item-title novalue="Add new task" />
         <input|checkbox #new-item-star class="task-star" />
     </div>
-    <ul each="task in currentTaskList|{done:false}" #task-list-todo>
+    <ul each="task in currentTaskItems|{done:false}" #task-list-todo>
         <li @taskid="task.id">
             <input|checkbox(task.done) class="task-done" />
             <span class="task-title"><output(task.title) /></span>
@@ -142,8 +159,8 @@
         </li>
     </ul>
 
-    <caption #task-done-desc class="{{hide:currentTaskList.length==0}}">已完成任务</caption>
-    <ul each="task in currentTaskList|{done:true}" #task-list-done collapsed>
+    <caption #task-done-desc>已完成任务</caption>
+    <ul each="task in currentTaskItems|{done:true}" #task-list-done collapsed>
         <li @taskid="task.id">
             <div><input|checkbox(task.done) class="task-done" /></div>
             <div>

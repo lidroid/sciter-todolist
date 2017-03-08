@@ -2,13 +2,35 @@
     @const BG: url(default/bg.jpg);
     @const FG: #000;
     @const FG-REVERT: #fff;
-    @const TASKS-BG: #f0f0f0;
+    @const TASKS-BG: #f6f6f6;
     @const TASKS-CURRENT-BG: #5696cb;
     @const TASKS-CURRENT-FG: #fff;
-    @const TASKS-ICON: url(default/task-icon.png);
-    @const TASKS-CURRENT-ICON: url(default/tasks-icon-current.png);
-    @const TASKS-EDIT-ICON: url(default/task-edit.png);
     :root { background: @BG; color: @FG; }
+
+    :root vlist#task-pane {
+        background-color: @TASKS-BG;
+    }
+
+    :root vlist#task-pane > li:current {
+        background: #5da1da;
+        color: #fff;
+    }
+
+    :root vlist#task-pane > li:current div:last-child {
+        border-left: 1px solid #fff;
+    }
+
+    :root div#new-task {
+        color: #aaa;
+        background-color: #fafafa;
+        box-shadow: 0 0 2px rgba(0, 0, 0, .6);
+    }
+
+    :root div#new-task:hover {
+        color: #666;
+        background: #f6f6f6;
+    }
+
     :root img.task-edit {
         foreground-image: url(default/edit.png);
         size: 24dip;
