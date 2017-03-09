@@ -16,46 +16,35 @@
     </script>
 
     <script type="text/tiscript">
+    var dataFileUrl = self.url(System.path(#USER_APPDATA) + "/todolist.json");
+
     namespace Data {
-        var tasks = [
-            {
-                id: 0;
-                title: "todolist开发任务",
-                count: 4,
-                items: [
-                    { id: 12345, title: "需求调研", star: false, done: true, doneDate: new Date("2016-12-12") },
-                    { id: 12346, title: "编写需求分析说明书", star: true, done: true, doneDate: new Date("2016-12-13") },
-                    { id: 12347, title: "功能原型设计", star: false, done: false },
-                    { id: 12348, title: "界面UI设计", star: true, done: false }
-                ]
-            },
-            {
-                id: 1;
-                title: "月工作计划",
-                count: 4,
-                items: [
-                    { id: 300, title: "新租办公室", star: true, done: true, doneDate: new Date("2016-12-12") },
-                    { id: 301, title: "变更税务登记证", star: true, done: true, doneDate: new Date("2016-12-13") },
-                    { id: 302, title: "招聘开发人员", star: false, done: false },
-                    { id: 303, title: "招标XXX工程", star: true, done: false }
-                ]
-            },
-            {
-                id: 2;
-                title: "登月计划",
-                count: 0,
-                items: []
-            },
-            {
-                id: 3;
-                title: "征服地球",
-                count: 0,
-                items: []
-            }
-        ];
+        var tasks = [];
 
         var currentTaskList = null;
         var currentTaskItems = [];
+    }
+
+    function loadDataFromDisk() {
+        var stream = Stream.openFile(dataFileUrl);
+        stream.encoding = "utf-8";
+        if (stream) {
+            Data.tasks = parseData(stream);
+            stream.close();
+        }
+
+        if (Data.tasks.length == 0) {
+            Data.tasks = [{id: 0, title: "我的任务清单", count: 0, items: []}];
+        }
+    }
+
+    function saveDataToDisk() {
+        var stream = Stream.openFile(dataFileUrl, "wt");
+        stream.encoding = "utf-8";
+        if (stream) {
+            stream << JSON.stringify(Data.tasks);
+            stream.close();
+        }
     }
 
     function setupTaskListObserver(taskList) {
@@ -68,6 +57,12 @@
     }
 
     self.ready = function() {
+        self.timer(300000, saveDataToDisk);
+        view.root.on("closerequest", function(evt) {
+            saveDataToDisk();
+        });
+
+        loadDataFromDisk();
         $(frame#task-pane).load("task-pane.html");
         $(frame#task-list).load("task-list.html");
         $(frame#task-pane)[0].$(vlist).on("change", function() {

@@ -135,7 +135,9 @@
 
         $(input#new-item-title).on("keyup", function(evt) {
             if (evt.keyCode == Event.VK_RETURN && this.text.trim().length > 0) {
-                Data.currentTaskItems.unshift({id: Data.currentTaskItems[0].id - 1, title: this.text.trim(), star: $(#new-item-star).checked, done: false});
+                var now = new Date();
+                var taskId = Date.utc(now.year, now.month, now.day, now.hour, now.minute, now.second, now.millisecond);
+                Data.currentTaskItems.unshift({id: taskId, title: this.text.trim(), star: $(#new-item-star).checked, done: false});
                 this.clear();
             }
         });
