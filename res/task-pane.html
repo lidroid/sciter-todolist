@@ -96,12 +96,41 @@
         }
     }
 
+    function onListEditClick(evt) {
+        var listObj;
+        var elem = evt.target;
+        while (elem.tag != "li" && elem.parent != null) elem = elem.parent;
+        if (elem.tag == "li") {
+            var listId = elem.@#list-id;
+            for (var obj in Data.tasks) {
+                if (obj.id == listId) {
+                    listObj = obj;
+                    break;
+                }
+            }
+        }
+
+        var result = view.dialog {
+            url: self.url("task-list-edit.html"),
+            alignment: 5,
+            parameters: { title: listObj.title }
+        };
+
+        if (result) {
+            listObj.title = result;
+        }
+    }
+
     self.ready = function() {
+        // 设置任务列表list属性
         var vlist = VirtualList {
             container: $(vlist),
             bufferSize: 20,
             setupItemView: function(recordNo, record, itemEl) {
                 itemEl.@#list-id = record.id;
+
+                itemEl.$(div:last-child).off("click");
+                itemEl.$(div:last-child).on("click", onListEditClick);
             }
         };
 
@@ -109,6 +138,21 @@
         vlist.currentIndex = 0;
         vlist.postEvent("change");
 
+        // 增加清单按钮事件
+        self.$(div#new-task).on("click", function(evt) {
+            var result = view.dialog {
+                url: self.url("task-list-edit.html"),
+                alignment: 5
+            };
+
+            if (result) {
+                var now = new Date();
+                var listId = Date.utc(now.year, now.month, now.day, now.hour, now.minute, now.second, now.millisecond);
+                Data.tasks.push({id: listId, title: result, count: 0, items: []});
+            }
+        });
+
+        // 拖放支持
         var dragIndexAtTarget = -1;
         var dropIndexAtTarget = -1;
         DragDrop2 {

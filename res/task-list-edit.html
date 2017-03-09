@@ -1,0 +1,117 @@
+<html window-frame="solid-with-shadow" window-resizable lang="zh">
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <style>
+        @import url(lang.css);
+
+        html, body {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            padding: 8dip;
+            flow: vertical;
+            background: #ede3db;
+        }
+
+        h1 {
+            font-size: 1.5em;
+            line-height: 0;
+            text-align: center;
+        }
+
+        input {
+            margin: 10dip;
+            width: *;
+        }
+
+        hr {
+            margin-top: *;
+        }
+
+        div {
+            flow: horizontal;
+            margin: 10dip;
+        }
+
+        div > button:first-child{
+            margin-left: *;
+            margin-right: 10dip;
+        }
+
+        div > button {
+            border-radius: 3dip;
+            box-shadow: 0 0dip 4dip rgba(0, 0, 0, .6);
+            background-image: none;
+        }
+
+        button#cancel {
+            color: #666;
+            background-color: #f6f6f6;
+        }
+
+        button#ok {
+            color: #fff;
+            background-color: #399ef7;
+        }
+
+        button:active {
+            box-shadow: 0 0dip 1dip rgba(0, 0, 0, .6);;
+        }
+
+        button#ok:disabled {
+            background-color: #94c7f3;
+            color: #eee;
+        }
+    </style>
+
+    <script type="text/tiscript">
+    function resetButtonState() {
+        if (self.$(input).value.length == 0) {
+            self.$(button#ok).setState(Element.STATE_DISABLED);
+        } else {
+            self.$(button#ok).clearState(Element.STATE_DISABLED);
+        }
+    }
+
+    self.ready = function() {
+        if (view.parameters) {
+            self.$(input).value = view.parameters.title;
+        } else {
+            self.$(h1).text = "新清单";
+            self.$(button#ok).text = "创建清单";
+        }
+
+        $(input).on("change", function(evt) {
+            resetButtonState();
+        })
+
+        $(input).on("keyup", function(evt) {
+            if (evt.keyCode == Event.VK_RETURN && this.value.trim().length > 0) {
+                $(button#ok).postEvent("click");
+            }
+        })
+
+        $(button#cancel).on("click", function(evt) {
+            view.close();
+        });
+
+        $(button#ok).on("click", function(evt) {
+            view.close(self.$(input).value);
+        });
+
+        resetButtonState();
+    }
+    </script>
+</head>
+<body>
+    <h1>编辑清单</h1>
+    <input|text novalue="清单名称"></input>
+    <hr />
+    <div>
+        <button #cancel>取消</button>
+        <button #ok>完成</button>
+    </div>
+</body>
+</html>

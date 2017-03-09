@@ -4,8 +4,6 @@
     <title>待办清单</title>
     <link rel="stylesheet" href="default.css" />
     <script type="text/tiscript">
-    include "vlist.tis";
-
     function moveToScreenCenter() {
         var (screenWidth, screenHeight) = view.screenBox(#workarea, #dimension);
         var windowWidth = 840;
@@ -25,28 +23,35 @@
         var currentTaskItems = [];
     }
 
+    // 从文件加载数据
     function loadDataFromDisk() {
-        var stream = Stream.openFile(dataFileUrl);
-        stream.encoding = "utf-8";
-        if (stream) {
-            Data.tasks = parseData(stream);
-            stream.close();
-        }
+        try {
+            var stream = Stream.openFile(dataFileUrl);
+            stream.encoding = "utf-8";
+            if (stream) {
+                Data.tasks = parseData(stream);
+                stream.close();
+            }
+        } catch (e) {}
 
         if (Data.tasks.length == 0) {
             Data.tasks = [{id: 0, title: "我的任务清单", count: 0, items: []}];
         }
     }
 
+    // 保存数据到文件
     function saveDataToDisk() {
-        var stream = Stream.openFile(dataFileUrl, "wt");
-        stream.encoding = "utf-8";
-        if (stream) {
-            stream << JSON.stringify(Data.tasks);
-            stream.close();
-        }
+        try {
+            var stream = Stream.openFile(dataFileUrl, "wt");
+            stream.encoding = "utf-8";
+            if (stream) {
+                stream << JSON.stringify(Data.tasks);
+                stream.close();
+            }
+        } catch (e) {}
     }
 
+    // 监听清单列表项变化
     function setupTaskListObserver(taskList) {
         var listObj = taskList;
         return function(changedef) {
@@ -65,12 +70,24 @@
         loadDataFromDisk();
         $(frame#task-pane).load("task-pane.html");
         $(frame#task-list).load("task-list.html");
+
+        // 清单变化事件
         $(frame#task-pane)[0].$(vlist).on("change", function() {
             Data.currentTaskList = this.value[this.currentIndex];
             Data.currentTaskItems = Data.currentTaskList.items;
             $(frame#task-list).load("task-list.html");
             $(frame#task-list)[0].$(input#new-item-title).@#novalue = "在\"" + Data.currentTaskList.title + "\"中添加一个任务...";
         });
+
+        // 监视清单变化，为新增清单增加列表项变化监视器
+        Object.addObserver.call(Data.tasks, function(changedef) {
+            if (changedef[0] == #add-range) {
+                var startIndex = changedef[3];
+                for (var i = startIndex - 1; i < Data.tasks.length; i++) {
+                    Object.addObserver.call(Data.tasks[i].items, setupTaskListObserver(Data.tasks[i]));
+                }
+            }
+        })
 
         for (var taskList in Data.tasks) {
             Object.addObserver.call(taskList.items, setupTaskListObserver(taskList));
