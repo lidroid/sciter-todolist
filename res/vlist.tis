@@ -470,6 +470,14 @@ function VirtualList(params) {
         return null; // out of sliding window
       return list[idx - buffer_start];
     }
+
+    list.enableObserver = function() {
+      setupSetObserver(true, true);
+    }
+
+    list.disableObserver = function() {
+      setupSetObserver(false, true);
+    }
   
     list.clear();
     if( records )

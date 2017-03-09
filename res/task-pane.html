@@ -74,20 +74,70 @@
         text-align: center;
         vertical-align: middle;
     }
+
+    li:drag-source > div { visibility:hidden;  }
     </style>
 
     <script type="text/tiscript">
     include "vlist.tis";
+    include "ddm2.tis";
+
+    function onTaskDelete(evt) {
+        var elem = evt.target;
+        while (elem.tag != "li" && elem.parent != null) elem = elem.parent;
+
+        if (elem.tag == "li") {
+            var id = elem.@#list-id;
+            for (var i = 0; i < Data.tasks.length; i++) {
+                if (Data.tasks[i].id == id) {
+                    Data.tasks.splice(i, 1);
+                }
+            }
+        }
+    }
 
     self.ready = function() {
         var vlist = VirtualList {
             container: $(vlist),
-            bufferSize: 20
+            bufferSize: 20,
+            setupItemView: function(recordNo, record, itemEl) {
+                itemEl.@#list-id = record.id;
+            }
         };
 
         vlist.value = Data.tasks;
         vlist.currentIndex = 0;
         vlist.postEvent("change");
+
+        var dragIndexAtTarget = -1;
+        var dropIndexAtTarget = -1;
+        DragDrop2 {
+            what: "vlist li",
+            where: "vlist",
+            container: "vlist",
+            acceptDrop: function(draggable, target, indexAtTarget) {
+                for (var i = 0; i < Data.tasks.length; i++) {
+                    if (Data.tasks[i].id == draggable.@#list-id) {
+                        dragIndexAtTarget = i;
+                    }
+                }
+
+                if (dragIndexAtTarget != -1) {
+                    dropIndexAtTarget = indexAtTarget;
+                    if (dropIndexAtTarget > dragIndexAtTarget) dropIndexAtTarget--;
+                }
+
+                return true;
+            },
+            dropped: function(draggable, from) {
+                vlist.disableObserver();
+                var draggableObj = Data.tasks[dragIndexAtTarget];
+                Data.tasks.splice(dragIndexAtTarget, 1);
+                Data.tasks.splice(dropIndexAtTarget, 0, draggableObj);
+                dragIndexAtTarget = dropIndexAtTarget = -1;
+                vlist.enableObserver();
+            }
+        };
     }
     </script>
 </head>
