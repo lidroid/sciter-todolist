@@ -8,6 +8,10 @@
 
 构建工具使用了基于lua的xmake -- (https://github.com/tboox/xmake)。
 
+## 截图
+
+![主界面截图](screenshot/TodoList.jpg)
+
 ## 准备支持的功能
 
 * 存储和管理自己的待办事项

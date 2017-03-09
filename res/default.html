@@ -62,6 +62,8 @@
     }
 
     self.ready = function() {
+        // TODO add xp support for saveDataToDisk
+
         self.timer(300000, saveDataToDisk);
         view.root.on("closerequest", function(evt) {
             saveDataToDisk();
