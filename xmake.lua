@@ -64,5 +64,8 @@ elseif is_plat("windows") then
     add_files("sciter/include/behaviors/behavior_drawing-opengl.cpp")
     add_files("sciter/include/behaviors/behavior_drawing-gdi.cpp")
     --add_files("sciter/include/behaviors/behavior_camera_capture.cpp")
+    after_build(function()
+        os.run("mt.exe -manifest src/PerMonitorHighDPIAware.manifest -outputresource:build/todolist.exe;1")
+    end);
 end
 

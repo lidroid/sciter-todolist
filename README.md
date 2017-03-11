@@ -10,7 +10,7 @@
 
 ## 截图
 
-![主界面截图](screenshot/TodoList.jpg)
+![主界面截图](screenshot/TodoList.png)
 
 ## 准备支持的功能
 
