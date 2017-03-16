@@ -87,27 +87,19 @@
         while (elem.tag != "li" && elem.parent != null) elem = elem.parent;
 
         if (elem.tag == "li") {
-            var id = elem.@#list-id;
-            for (var i = 0; i < Data.tasks.length; i++) {
-                if (Data.tasks[i].id == id) {
-                    Data.tasks.splice(i, 1);
-                }
-            }
+            Data.tasks.splice(Data.tasks.indexOf(elem.record), 1);
         }
     }
 
     function onListEditClick(evt) {
         var listObj;
         var elem = evt.target;
-        while (elem.tag != "li" && elem.parent != null) elem = elem.parent;
+        while (elem.tag != "li" && elem.parent != null) {
+            elem = elem.parent;
+        }
+
         if (elem.tag == "li") {
-            var listId = elem.@#list-id;
-            for (var obj in Data.tasks) {
-                if (obj.id == listId) {
-                    listObj = obj;
-                    break;
-                }
-            }
+            listObj = elem.record;
         }
 
         var result = view.dialog {
@@ -127,7 +119,7 @@
             container: $(vlist),
             bufferSize: 20,
             setupItemView: function(recordNo, record, itemEl) {
-                itemEl.@#list-id = record.id;
+                itemEl.record = record;
 
                 itemEl.$(div:last-child).off("click");
                 itemEl.$(div:last-child).on("click", onListEditClick);
