@@ -6,8 +6,8 @@
     <script type="text/tiscript">
     function moveToScreenCenter() {
         var (screenWidth, screenHeight) = view.screenBox(#workarea, #dimension);
-        var windowWidth = dip(840);
-        var windowHeight = dip(540);
+        var windowWidth = px(dip(840).toFloat(#px));
+        var windowHeight = px(dip(540).toFloat(#px));
         view.move((screenWidth - windowWidth) / 2, (screenHeight - windowHeight) / 2, windowWidth, windowHeight, true);
     }
     moveToScreenCenter();
