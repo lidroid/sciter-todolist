@@ -46,6 +46,7 @@
     }
 
     :root input.task-star {
+        background: none;
         foreground-image: url(default/star.png);
     }
 
@@ -62,6 +63,7 @@
     }
 
     :root input.task-done {
+        background: none;
         foreground-image: url(default/uncheck.png);
     }
 
